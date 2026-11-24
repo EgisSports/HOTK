@@ -3,61 +3,516 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Hand of the King</title>
+<title>Game of Thrones: Hand of the King</title>
+
 <style>
-:root{--bg:#111827;--panel:#1f2937;--text:#f9fafb;--accent:#fbbf24}
-body{background:var(--bg);color:var(--text);font-family:Segoe UI,sans-serif;padding:20px;margin:0}
-h1{text-align:center}.setup,.toolbar{text-align:center;margin:12px 0}
-input,select,button{padding:8px;border-radius:6px;border:none;margin:4px}
-button{background:var(--accent);font-weight:bold;cursor:pointer}
-#game{display:none}
-#board{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;max-width:1000px;margin:auto;background:#0f172a;padding:15px;border-radius:15px}
-.card{min-height:90px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-weight:bold;text-align:center;padding:4px;cursor:pointer;box-shadow:0 4px 10px rgba(0,0,0,.4)}
-.card:hover{transform:scale(1.05)}
-.varys{border:4px solid gold;box-shadow:0 0 12px gold}
-.legal{outline:3px solid #22c55e}.empty{visibility:hidden}
-.house-Stark{background:linear-gradient(135deg,#4b5563,#9ca3af)}
-.house-Greyjoy{background:linear-gradient(135deg,#111827,#fbbf24)}
-.house-Lannister{background:linear-gradient(135deg,#991b1b,#fca5a5)}
-.house-Targaryen{background:linear-gradient(135deg,#000,#7f1d1d)}
-.house-Baratheon{background:linear-gradient(135deg,#78350f,#fde047);color:#000}
-.house-Tyrell{background:linear-gradient(135deg,#14532d,#84cc16)}
-.house-Tully{background:linear-gradient(135deg,#1e3a8a,#dc2626)}
-.house-Varys{background:#444}
-#players{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:10px;margin-top:15px}
-.player{background:var(--panel);padding:10px;border-radius:10px}.activePlayer{outline:3px solid gold}
-.banner{display:inline-block;background:#000;padding:3px 6px;margin:2px;border-radius:4px}
-table{width:100%;font-size:12px;border-collapse:collapse} td,th{border-bottom:1px solid #444;padding:2px}
-#log{max-width:1000px;margin:15px auto;background:var(--panel);padding:10px;height:140px;overflow:auto;border-radius:10px}
-#status,#bannerStatus{text-align:center;margin:10px}
-</style></head><body>
+:root{
+    --bg:#111827;
+    --panel:#1f2937;
+    --card:#374151;
+    --text:#f9fafb;
+    --accent:#fbbf24;
+}
+
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+}
+
+body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:Segoe UI,Tahoma,sans-serif;
+    padding:20px;
+}
+
+h1{
+    text-align:center;
+    margin-bottom:15px;
+}
+
+#setup{
+    text-align:center;
+    margin-bottom:20px;
+}
+
+select,button{
+    padding:10px;
+    border:none;
+    border-radius:6px;
+    font-size:16px;
+}
+
+button{
+    cursor:pointer;
+    background:var(--accent);
+    color:black;
+    font-weight:bold;
+}
+
+#status{
+    text-align:center;
+    font-size:22px;
+    margin-bottom:15px;
+}
+
+#game{
+    display:none;
+}
+
+#board{
+    display:grid;
+    grid-template-columns: repeat(6,1fr);
+    gap:6px;
+    max-width:900px;
+    margin:auto;
+}
+
+.card{
+    min-height:90px;
+    border-radius:8px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    padding:5px;
+    font-weight:bold;
+    cursor:pointer;
+    user-select:none;
+    transition:.2s;
+    border:3px solid transparent;
+}
+
+.card:hover{
+    transform:scale(1.04);
+}
+
+.varys{
+    border:3px solid gold;
+}
+
+.legal{
+    box-shadow:0 0 12px #00ff88;
+}
+
+.empty{
+    visibility:hidden;
+}
+
+.house-Stark{background:#2563eb;}
+.house-Greyjoy{background:#f59e0b;}
+.house-Lannister{background:#dc2626;}
+.house-Targaryen{background:#7c3aed;}
+.house-Baratheon{background:#16a34a;}
+.house-Tyrell{background:#84cc16;}
+.house-Tully{background:#0891b2;}
+.house-Varys{background:#444;}
+
+#players{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    gap:10px;
+    margin-top:20px;
+}
+
+.player{
+    background:var(--panel);
+    border-radius:10px;
+    padding:10px;
+}
+
+.activePlayer{
+    outline:3px solid gold;
+}
+
+.banner{
+    display:inline-block;
+    margin:2px;
+    padding:4px 8px;
+    border-radius:4px;
+    background:black;
+}
+
+#log{
+    max-width:900px;
+    margin:15px auto;
+    background:var(--panel);
+    padding:10px;
+    border-radius:10px;
+    height:150px;
+    overflow:auto;
+}
+</style>
+</head>
+<body>
+
 <h1>Hand of the King</h1>
-<div id="setup" class="setup">
-Players: <select id="playerCount" onchange="updatePlayerInputs()"><option>2</option><option>3</option><option>4</option></select>
-<div id="playerInputs"></div>
-<button onclick="startGame()">Start Game</button>
+
+<div id="setup">
+    Players:
+    <select id="playerCount">
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+    </select>
+
+    <button onclick="startGame()">Start Game</button>
 </div>
+
 <div id="game">
-<div class="toolbar"><button onclick="restartGame()">Restart Game</button></div>
-<div id="status"></div><div id="bannerStatus"></div><div id="board"></div><div id="players"></div><div id="log"></div>
+
+<div id="status"></div>
+
+<div id="board"></div>
+
+<div id="players"></div>
+
+<div id="log"></div>
+
 </div>
+
 <script>
-const houseCounts={Stark:8,Greyjoy:7,Lannister:6,Targaryen:5,Baratheon:4,Tyrell:3,Tully:2};
-let board=[],players=[],currentPlayer=0,gameOver=false;
-function updatePlayerInputs(){let c=+playerCount.value;playerInputs.innerHTML='';for(let i=1;i<=c;i++)playerInputs.innerHTML+=`<div><input id="playerName${i}" value="Player ${i}"></div>`}
-updatePlayerInputs();
-function shuffle(a){for(let i=a.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}}
-function startGame(){players=[];let c=+playerCount.value;for(let i=1;i<=c;i++)players.push({name:document.getElementById('playerName'+i).value||('Player '+i),cards:{},banners:new Set()});let deck=[];Object.entries(houseCounts).forEach(([h,n])=>{for(let i=0;i<n;i++)deck.push({house:h})});deck.push({house:'Varys'});shuffle(deck);board=deck;currentPlayer=0;gameOver=false;setup.style.display='none';game.style.display='block';render();}
-function restartGame(){location.reload();}
-function getVarysIndex(){return board.findIndex(x=>x&&x.house==='Varys');}
-function getLegalMoves(){let legal=[];let v=getVarysIndex(),r=Math.floor(v/6),c=v%6;[[1,0],[-1,0],[0,1],[0,-1]].forEach(d=>{let rr=r+d[0],cc=c+d[1];while(rr>=0&&rr<6&&cc>=0&&cc<6){let i=rr*6+cc;if(board[i])legal.push(i);rr+=d[0];cc+=d[1];}});return legal;}
-function attemptMove(i){if(gameOver||!getLegalMoves().includes(i))return;moveVarys(i)}
-function moveVarys(target){let v=getVarysIndex();let house=board[target].house;let step=(Math.floor(v/6)==Math.floor(target/6))?(target>v?1:-1):(target>v?6:-6);let path=[];for(let i=v+step;;i+=step){if(board[i]&&board[i].house===house)path.push(i);if(i===target)break;}path.forEach(i=>{players[currentPlayer].cards[house]=(players[currentPlayer].cards[house]||0)+1;board[i]=null;});board[v]=null;board[target]={house:'Varys'};updateBanners();log(players[currentPlayer].name+' collected '+path.length+' '+house);if(getLegalMoves().length===0){finishGame();return;}currentPlayer=(currentPlayer+1)%players.length;render();}
-function updateBanners(){Object.keys(houseCounts).forEach(h=>{let m=Math.max(...players.map(p=>p.cards[h]||0));players.forEach(p=>p.banners.delete(h));if(m>0)players.forEach(p=>{if((p.cards[h]||0)===m)p.banners.add(h);});});}
-function render(){status.innerHTML=players[currentPlayer].name+"'s Turn";renderBoard();renderPlayers();renderBannerStatus();}
-function renderBoard(){board.innerHTML='';let legal=getLegalMoves();document.getElementById('board').innerHTML='';board.forEach?0:0;const b=document.getElementById('board');window.board.forEach((card,i)=>{let d=document.createElement('div');if(!card){d.className='card empty';b.appendChild(d);return;}d.className='card house-'+card.house;if(card.house==='Varys')d.classList.add('varys');if(legal.includes(i))d.classList.add('legal');d.textContent=card.house;d.onclick=()=>attemptMove(i);b.appendChild(d);});}
-function renderPlayers(){playersDiv=document.getElementById('players');playersDiv.innerHTML='';const houses=Object.keys(houseCounts);players.forEach((p,i)=>{let d=document.createElement('div');d.className='player'+(i===currentPlayer?' activePlayer':'');let rows=houses.map(h=>`<tr><td>${h}</td><td>${p.cards[h]||0}</td></tr>`).join('');let banners=[...p.banners].map(x=>`<span class="banner">${x}</span>`).join('');d.innerHTML=`<h3>${p.name}</h3><div>Banners: ${p.banners.size}</div>${banners}<table><tr><th>House</th><th>Cards</th></tr>${rows}</table>`;playersDiv.appendChild(d);});}
-function renderBannerStatus(){let h='<b>Current Banner Owners</b><br>';Object.keys(houseCounts).forEach(x=>{h+=x+': '+players.filter(p=>p.banners.has(x)).map(p=>p.name).join(', ')+'<br>'});bannerStatus.innerHTML=h;}
-function log(t){document.getElementById('log').innerHTML=t+'<br>'+document.getElementById('log').innerHTML;}
-function finishGame(){gameOver=true;let w=players.sort((a,b)=>b.banners.size-a.banners.size)[0];alert('Winner: '+w.name+' ('+w.banners.size+' banners)');}
-</script></body></html>
+
+const houseCounts = {
+    Stark:8,
+    Greyjoy:7,
+    Lannister:6,
+    Targaryen:5,
+    Baratheon:4,
+    Tyrell:3,
+    Tully:2
+};
+
+const bannerValue = {...houseCounts};
+
+let board=[];
+let players=[];
+let currentPlayer=0;
+let gameOver=false;
+
+function log(msg){
+    const div=document.getElementById("log");
+    div.innerHTML=msg+"<br>"+div.innerHTML;
+}
+
+function shuffle(a){
+    for(let i=a.length-1;i>0;i--){
+        const j=Math.floor(Math.random()*(i+1));
+        [a[i],a[j]]=[a[j],a[i]];
+    }
+}
+
+function startGame(){
+
+    gameOver=false;
+
+    players=[];
+
+    const count=parseInt(document.getElementById("playerCount").value);
+
+    for(let i=0;i<count;i++){
+        players.push({
+            name:`Player ${i+1}`,
+            cards:{},
+            banners:new Set()
+        });
+    }
+
+    let deck=[];
+
+    Object.entries(houseCounts).forEach(([house,count])=>{
+        for(let i=0;i<count;i++){
+            deck.push({
+                house,
+                id:`${house}-${i}`
+            });
+        }
+    });
+
+    deck.push({
+        house:"Varys",
+        id:"Varys"
+    });
+
+    shuffle(deck);
+
+    board=deck;
+
+    currentPlayer=0;
+
+    document.getElementById("setup").style.display="none";
+    document.getElementById("game").style.display="block";
+
+    render();
+}
+
+function getVarysIndex(){
+    return board.findIndex(c=>c && c.house==="Varys");
+}
+
+function render(){
+
+    renderBoard();
+    renderPlayers();
+
+    document.getElementById("status").innerHTML=
+        `${players[currentPlayer].name}'s Turn`;
+}
+
+function renderBoard(){
+
+    const container=document.getElementById("board");
+
+    container.innerHTML="";
+
+    const legal=getLegalMoves();
+
+    board.forEach((card,index)=>{
+
+        const div=document.createElement("div");
+
+        if(!card){
+            div.className="card empty";
+            container.appendChild(div);
+            return;
+        }
+
+        div.className=`card house-${card.house}`;
+
+        if(card.house==="Varys")
+            div.classList.add("varys");
+
+        if(legal.includes(index))
+            div.classList.add("legal");
+
+        div.innerHTML=card.house;
+
+        div.onclick=()=>attemptMove(index);
+
+        container.appendChild(div);
+    });
+}
+
+function renderPlayers(){
+
+    const container=document.getElementById("players");
+
+    container.innerHTML="";
+
+    players.forEach((p,i)=>{
+
+        const div=document.createElement("div");
+
+        div.className="player";
+
+        if(i===currentPlayer)
+            div.classList.add("activePlayer");
+
+        let banners=[...p.banners]
+            .map(b=>`<span class='banner'>${b}</span>`)
+            .join("");
+
+        div.innerHTML=
+        `
+        <h3>${p.name}</h3>
+        <p>Banners: ${p.banners.size}</p>
+        ${banners}
+        `;
+
+        container.appendChild(div);
+    });
+}
+
+function getLegalMoves(){
+
+    const legal=[];
+
+    const v=getVarysIndex();
+
+    const row=Math.floor(v/6);
+    const col=v%6;
+
+    const dirs=[
+        [-1,0],
+        [1,0],
+        [0,-1],
+        [0,1]
+    ];
+
+    dirs.forEach(([dr,dc])=>{
+
+        let r=row+dr;
+        let c=col+dc;
+
+        while(r>=0 && r<6 && c>=0 && c<6){
+
+            let idx=r*6+c;
+
+            if(board[idx])
+                legal.push(idx);
+
+            r+=dr;
+            c+=dc;
+        }
+
+    });
+
+    return legal;
+}
+
+function attemptMove(target){
+
+    if(gameOver) return;
+
+    if(!getLegalMoves().includes(target))
+        return;
+
+    moveVarys(target);
+}
+
+function moveVarys(target){
+
+    const v=getVarysIndex();
+
+    const player=players[currentPlayer];
+
+    const targetHouse=board[target].house;
+
+    const path=[];
+
+    if(Math.floor(v/6)===Math.floor(target/6)){
+
+        const step=target>v?1:-1;
+
+        for(let i=v+step;;i+=step){
+
+            if(board[i] && board[i].house===targetHouse)
+                path.push(i);
+
+            if(i===target)
+                break;
+        }
+
+    } else {
+
+        const step=target>v?6:-6;
+
+        for(let i=v+step;;i+=step){
+
+            if(board[i] && board[i].house===targetHouse)
+                path.push(i);
+
+            if(i===target)
+                break;
+        }
+    }
+
+    path.forEach(idx=>{
+
+        if(!board[idx]) return;
+
+        player.cards[targetHouse]=(player.cards[targetHouse]||0)+1;
+
+        board[idx]=null;
+    });
+
+    board[v]=null;
+    board[target]={house:"Varys",id:"Varys"};
+
+    updateBanners();
+
+    log(`${player.name} collected ${path.length} ${targetHouse}`);
+
+    if(checkEndGame()){
+        finishGame();
+        return;
+    }
+
+    currentPlayer=(currentPlayer+1)%players.length;
+
+    render();
+}
+
+function updateBanners(){
+
+    Object.keys(houseCounts).forEach(house=>{
+
+        let max=-1;
+        let leader=[];
+
+        players.forEach((p,index)=>{
+
+            const count=p.cards[house]||0;
+
+            if(count>max){
+                max=count;
+                leader=[index];
+            } else if(count===max){
+                leader.push(index);
+            }
+        });
+
+        players.forEach(p=>p.banners.delete(house));
+
+        leader.forEach(i=>{
+            if(max>0)
+                players[i].banners.add(house);
+        });
+    });
+}
+
+function checkEndGame(){
+
+    return getLegalMoves().length===0;
+}
+
+function finishGame(){
+
+    gameOver=true;
+
+    let winners=[];
+    let best=-1;
+
+    players.forEach((p,i)=>{
+
+        const score=p.banners.size;
+
+        if(score>best){
+            best=score;
+            winners=[i];
+        }
+        else if(score===best){
+            winners.push(i);
+        }
+    });
+
+    let winner=winners[0];
+
+    if(winners.length>1){
+
+        let strongest=-1;
+
+        winners.forEach(i=>{
+
+            players[i].banners.forEach(b=>{
+
+                if(bannerValue[b]>strongest){
+
+                    strongest=bannerValue[b];
+                    winner=i;
+                }
+            });
+        });
+    }
+
+    render();
+
+    alert(
+        `Game Over!\n\nWinner: ${players[winner].name}\nBanners: ${players[winner].banners.size}`
+    );
+}
+
+</script>
+</body>
+</html>
