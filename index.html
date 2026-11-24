@@ -6,10 +6,10 @@
 <title>Game of Thrones: Hand of the King</title>
 
 <style>
+
 :root{
     --bg:#111827;
     --panel:#1f2937;
-    --card:#374151;
     --text:#f9fafb;
     --accent:#fbbf24;
 }
@@ -30,6 +30,11 @@ body{
 h1{
     text-align:center;
     margin-bottom:15px;
+    color:gold;
+}
+
+h2{
+    margin-bottom:10px;
 }
 
 #setup{
@@ -37,7 +42,22 @@ h1{
     margin-bottom:20px;
 }
 
-select,button{
+#playerInputs{
+    margin:15px 0;
+}
+
+#playerInputs input{
+    width:240px;
+    max-width:90%;
+    padding:10px;
+    border-radius:6px;
+    border:none;
+    margin:5px;
+    font-size:16px;
+}
+
+select,
+button{
     padding:10px;
     border:none;
     border-radius:6px;
@@ -51,68 +71,165 @@ button{
     font-weight:bold;
 }
 
-#status{
-    text-align:center;
-    font-size:22px;
-    margin-bottom:15px;
+button:hover{
+    filter:brightness(1.1);
 }
 
 #game{
     display:none;
 }
 
+#status{
+    text-align:center;
+    font-size:24px;
+    margin-bottom:10px;
+    font-weight:bold;
+}
+
+#bannerStatus{
+    text-align:center;
+    margin-bottom:15px;
+    background:var(--panel);
+    padding:10px;
+    border-radius:10px;
+    max-width:1000px;
+    margin-left:auto;
+    margin-right:auto;
+}
+
 #board{
     display:grid;
-    grid-template-columns: repeat(6,1fr);
-    gap:6px;
-    max-width:900px;
+    grid-template-columns:repeat(6,1fr);
+    gap:10px;
+
+    max-width:1000px;
     margin:auto;
+
+    background:#0f172a;
+    padding:15px;
+        border-radius:15px;
 }
 
 .card{
-    min-height:90px;
-    border-radius:8px;
+    min-height:95px;
+
+    border-radius:12px;
+
     display:flex;
     align-items:center;
     justify-content:center;
+
     text-align:center;
+
     padding:5px;
+
     font-weight:bold;
+
     cursor:pointer;
+
     user-select:none;
-    transition:.2s;
+
+    transition:.15s;
+
     border:3px solid transparent;
+
+    box-shadow:
+        0 4px 10px rgba(0,0,0,.4);
 }
 
 .card:hover{
-    transform:scale(1.04);
+    transform:scale(1.06);
+    z-index:2;
 }
 
 .varys{
-    border:3px solid gold;
+    border:4px solid gold;
+
+    box-shadow:
+        0 0 12px gold,
+        0 0 25px gold;
 }
 
 .legal{
-    box-shadow:0 0 12px #00ff88;
+    outline:3px solid #22c55e;
 }
 
 .empty{
     visibility:hidden;
 }
 
-.house-Stark{background:#2563eb;}
-.house-Greyjoy{background:#f59e0b;}
-.house-Lannister{background:#dc2626;}
-.house-Targaryen{background:#7c3aed;}
-.house-Baratheon{background:#16a34a;}
-.house-Tyrell{background:#84cc16;}
-.house-Tully{background:#0891b2;}
-.house-Varys{background:#444;}
+.house-Stark{
+    background:linear-gradient(
+        135deg,
+        #4b5563,
+        #9ca3af
+    );
+}
+
+.house-Greyjoy{
+    background:linear-gradient(
+        135deg,
+        #111827,
+        #fbbf24
+    );
+}
+
+.house-Lannister{
+    background:linear-gradient(
+        135deg,
+        #991b1b,
+        #fca5a5
+    );
+}
+
+.house-Targaryen{
+    background:linear-gradient(
+        135deg,
+        #000000,
+        #7f1d1d
+    );
+}
+
+.house-Baratheon{
+    background:linear-gradient(
+        135deg,
+        #78350f,
+        #fde047
+    );
+
+    color:black;
+}
+
+.house-Tyrell{
+    background:linear-gradient(
+        135deg,
+        #14532d,
+        #84cc16
+    );
+}
+.house-Tully{
+    background:linear-gradient(
+        135deg,
+        #1e3a8a,
+        #dc2626
+    );
+}
+
+.house-Varys{
+    background:linear-gradient(
+        135deg,
+        #6b7280,
+        #111827
+    );
+}
 
 #players{
     display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    grid-template-columns:
+        repeat(auto-fit,minmax(260px,1fr));
+
     gap:10px;
+
     margin-top:20px;
 }
 
@@ -128,47 +245,115 @@ button{
 
 .banner{
     display:inline-block;
+
     margin:2px;
+
     padding:4px 8px;
+
     border-radius:4px;
+
     background:black;
 }
 
+.player table{
+    width:100%;
+    border-collapse:collapse;
+    margin-top:10px;
+}
+
+.player th,
+.player td{
+    border-bottom:1px solid #444;
+    padding:4px;
+    text-align:left;
+    font-size:13px;
+}
+
 #log{
-    max-width:900px;
+    max-width:1000px;
+
     margin:15px auto;
+
     background:var(--panel);
+
     padding:10px;
+
     border-radius:10px;
-    height:150px;
+
+    height:160px;
+
     overflow:auto;
+}
+
+.toolbar{
+    text-align:center;
+    margin-bottom:15px;
+}
+
+@media(max-width:700px){
+
+    #board{
+        gap:5px;
+        padding:8px;
+    }
+
+    .card{
+        min-height:65px;
+        font-size:12px;
+    }
+
 }
 </style>
 </head>
+
 <body>
 
 <h1>Hand of the King</h1>
 
 <div id="setup">
+
+    <h2>New Game</h2>
+
     Players:
-    <select id="playerCount">
+
+    <select
+        id="playerCount"
+        onchange="updatePlayerInputs()">
+
         <option value="2">2</option>
+
         <option value="3">3</option>
+
         <option value="4">4</option>
+
     </select>
 
-    <button onclick="startGame()">Start Game</button>
+    <div id="playerInputs"></div>
+        <button onclick="startGame()">
+        Start Game
+    </button>
+
 </div>
 
 <div id="game">
 
-<div id="status"></div>
+    <div class="toolbar">
 
-<div id="board"></div>
+        <button onclick="restartGame()">
+            Restart Game
+        </button>
 
-<div id="players"></div>
+    </div>
 
-<div id="log"></div>
+    <div id="status"></div>
+
+    <div id="bannerStatus"></div>
+
+    <div id="board"></div>
+
+    <div id="players"></div>
+
+    <div id="log"></div>
 
 </div>
 
@@ -186,49 +371,157 @@ const houseCounts = {
 
 const bannerValue = {...houseCounts};
 
-let board=[];
-let players=[];
-let currentPlayer=0;
-let gameOver=false;
+const houses = [
+    "Stark",
+    "Greyjoy",
+    "Lannister",
+    "Targaryen",
+    "Baratheon",
+    "Tyrell",
+    "Tully"
+];
 
-function log(msg){
-    const div=document.getElementById("log");
-    div.innerHTML=msg+"<br>"+div.innerHTML;
+let board = [];
+let players = [];
+let currentPlayer = 0;
+let gameOver = false;
+
+function updatePlayerInputs(){
+
+    const count =
+        parseInt(
+            document.getElementById(
+                "playerCount"
+            ).value
+        );
+
+    const div =
+        document.getElementById(
+            "playerInputs"
+        );
+
+    div.innerHTML = "";
+
+    for(let i = 1; i <= count; i++){
+
+        div.innerHTML += `
+            <div>
+                <input
+                    id="playerName${i}"
+                    value="Player ${i}"
+                    placeholder="Player ${i}"
+                >
+            </div>
+        `;
+    }
 }
 
-function shuffle(a){
-    for(let i=a.length-1;i>0;i--){
-        const j=Math.floor(Math.random()*(i+1));
-        [a[i],a[j]]=[a[j],a[i]];
+updatePlayerInputs();
+
+function log(message){
+
+    const div =
+        document.getElementById("log");
+
+    div.innerHTML =
+        message +
+        "<br>" +
+        div.innerHTML;
+}
+
+function shuffle(array){
+
+    for(
+        let i=array.length-1;
+        i>0;
+        i--
+    ){
+
+        const j =
+            Math.floor(
+                Math.random()*(i+1)
+            );
+
+        [array[i],array[j]]
+            =
+                [array[j],array[i]];
+    }
+}
+
+function restartGame(){
+
+    if(
+        confirm(
+            "Start a new game?"
+        )
+    ){
+        location.reload();
     }
 }
 
 function startGame(){
 
-    gameOver=false;
+    gameOver = false;
 
-    players=[];
+    players = [];
 
-    const count=parseInt(document.getElementById("playerCount").value);
+    const count =
+        parseInt(
+            document.getElementById(
+                "playerCount"
+            ).value
+        );
 
-    for(let i=0;i<count;i++){
+    for(
+        let i=0;
+        i<count;
+        i++
+    ){
+
+        let name =
+            document
+            .getElementById(
+                `playerName${i+1}`
+            )
+            .value
+            .trim();
+
         players.push({
-            name:`Player ${i+1}`,
+
+            name:
+                name ||
+                `Player ${i+1}`,
+
             cards:{},
-            banners:new Set()
+
+            banners:
+                new Set()
+
         });
+
     }
 
-    let deck=[];
+    let deck = [];
 
-    Object.entries(houseCounts).forEach(([house,count])=>{
-        for(let i=0;i<count;i++){
-            deck.push({
-                house,
-                id:`${house}-${i}`
-            });
+    Object.entries(
+        houseCounts
+    ).forEach(
+        ([house,count])=>{
+
+            for(
+                let i=0;
+                i<count;
+                i++
+            ){
+
+                deck.push({
+                    house,
+                    id:
+                    `${house}-${i}`
+                });
+            }
         }
-    });
+    );
 
     deck.push({
         house:"Varys",
@@ -237,282 +530,634 @@ function startGame(){
 
     shuffle(deck);
 
-    board=deck;
+    board = deck;
 
-    currentPlayer=0;
+    currentPlayer = 0;
 
-    document.getElementById("setup").style.display="none";
-    document.getElementById("game").style.display="block";
+    document
+        .getElementById(
+            "setup"
+        )
+        .style.display =
+        "none";
+
+    document
+        .getElementById(
+            "game"
+        )
+        .style.display =
+        "block";
+
+    document
+        .getElementById(
+            "log"
+        )
+        .innerHTML = "";
 
     render();
 }
 
 function getVarysIndex(){
-    return board.findIndex(c=>c && c.house==="Varys");
+
+    return board.findIndex(
+        card =>
+            card &&
+            card.house ===
+            "Varys"
+    );
+
 }
 
 function render(){
 
     renderBoard();
+
     renderPlayers();
 
-    document.getElementById("status").innerHTML=
+    renderBannerStatus();
+
+    document
+            .getElementById(
+            "status"
+        ).innerHTML =
         `${players[currentPlayer].name}'s Turn`;
 }
 
 function renderBoard(){
 
-    const container=document.getElementById("board");
+    const container =
+        document.getElementById(
+            "board"
+        );
 
-    container.innerHTML="";
+    container.innerHTML = "";
 
-    const legal=getLegalMoves();
+    const legal =
+        getLegalMoves();
 
-    board.forEach((card,index)=>{
+    board.forEach(
+        (card,index)=>{
 
-        const div=document.createElement("div");
+        const div =
+            document.createElement(
+                "div"
+            );
 
         if(!card){
-            div.className="card empty";
-            container.appendChild(div);
+
+            div.className =
+                "card empty";
+
+            container.appendChild(
+                div
+            );
+
             return;
         }
 
-        div.className=`card house-${card.house}`;
+        div.className =
+            `card house-${card.house}`;
 
-        if(card.house==="Varys")
-            div.classList.add("varys");
+        if(
+            card.house ===
+            "Varys"
+        ){
+            div.classList.add(
+                "varys"
+            );
+        }
 
-        if(legal.includes(index))
-            div.classList.add("legal");
+        if(
+            legal.includes(index)
+        ){
+            div.classList.add(
+                "legal"
+            );
+        }
 
-        div.innerHTML=card.house;
+        div.innerHTML =
+            card.house;
 
-        div.onclick=()=>attemptMove(index);
+        div.onclick =
+            ()=>attemptMove(
+                index
+            );
 
-        container.appendChild(div);
+        container.appendChild(
+            div
+        );
+
     });
 }
 
 function renderPlayers(){
 
-    const container=document.getElementById("players");
+    const container =
+        document.getElementById(
+            "players"
+        );
 
-    container.innerHTML="";
+    container.innerHTML = "";
 
-    players.forEach((p,i)=>{
+    players.forEach(
+        (player,index)=>{
 
-        const div=document.createElement("div");
+        const div =
+            document.createElement(
+                "div"
+            );
 
-        div.className="player";
+        div.className =
+            "player";
 
-        if(i===currentPlayer)
-            div.classList.add("activePlayer");
+        if(
+            index ===
+            currentPlayer
+        ){
+            div.classList.add(
+                "activePlayer"
+            );
+        }
 
-        let banners=[...p.banners]
-            .map(b=>`<span class='banner'>${b}</span>`)
+        let banners =
+            [...player.banners]
+            .map(
+                banner =>
+                `<span class='banner'>
+                    ${banner}
+                </span>`
+            )
             .join("");
 
-        div.innerHTML=
-        `
-        <h3>${p.name}</h3>
-        <p>Banners: ${p.banners.size}</p>
-        ${banners}
+        let houseTable =
+            `
+            <table>
+                <tr>
+                    <th>House</th>
+                    <th>Cards</th>
+                </tr>
+            `;
+                    houses.forEach(house=>{
+
+            houseTable += `
+                <tr>
+                    <td>${house}</td>
+                    <td>
+                        ${
+                            player.cards[
+                                house
+                            ] || 0
+                        }
+                    </td>
+                </tr>
+            `;
+
+        });
+
+        houseTable += `
+            </table>
         `;
 
-        container.appendChild(div);
+        div.innerHTML = `
+            <h3>
+                ${player.name}
+            </h3>
+
+            <p>
+                🏳️ Banners:
+                <strong>
+                    ${
+                        player.banners.size
+                    }
+                </strong>
+            </p>
+
+            ${banners}
+
+            ${houseTable}
+        `;
+
+        container.appendChild(
+            div
+        );
+
     });
+
+}
+
+function renderBannerStatus(){
+
+    let html =
+        "<h3>Current Banner Owners</h3>";
+
+    Object.keys(
+        houseCounts
+    ).forEach(house=>{
+
+        const owners =
+            players
+            .filter(
+                player =>
+                player.banners.has(
+                    house
+                )
+            )
+            .map(
+                player =>
+                player.name
+            )
+            .join(", ");
+
+        html += `
+            <div>
+                <strong>
+                    ${house}
+                </strong>:
+                ${
+                    owners ||
+                    "None"
+                }
+            </div>
+        `;
+
+    });
+
+    document
+        .getElementById(
+            "bannerStatus"
+        )
+        .innerHTML = html;
+
 }
 
 function getLegalMoves(){
 
-    const legal=[];
+    const legal = [];
 
-    const v=getVarysIndex();
+    const varys =
+        getVarysIndex();
 
-    const row=Math.floor(v/6);
-    const col=v%6;
+    const row =
+        Math.floor(
+            varys/6
+        );
 
-    const dirs=[
+    const col =
+        varys % 6;
+
+    const directions = [
+
         [-1,0],
+
         [1,0],
+
         [0,-1],
+
         [0,1]
+
     ];
 
-    dirs.forEach(([dr,dc])=>{
+    directions.forEach(
+        ([dr,dc])=>{
+                    let r = row + dr;
+        let c = col + dc;
 
-        let r=row+dr;
-        let c=col+dc;
+        while(
+            r >= 0 &&
+            r < 6 &&
+            c >= 0 &&
+            c < 6
+        ){
 
-        while(r>=0 && r<6 && c>=0 && c<6){
+            let index =
+                (r * 6) + c;
 
-            let idx=r*6+c;
+            if(board[index]){
+                legal.push(index);
+            }
 
-            if(board[idx])
-                legal.push(idx);
+            r += dr;
+            c += dc;
 
-            r+=dr;
-            c+=dc;
         }
 
     });
 
     return legal;
+
 }
 
 function attemptMove(target){
 
-    if(gameOver) return;
-
-    if(!getLegalMoves().includes(target))
+    if(gameOver){
         return;
+    }
+
+    if(
+        !getLegalMoves()
+        .includes(target)
+    ){
+        return;
+    }
 
     moveVarys(target);
+
 }
 
 function moveVarys(target){
 
-    const v=getVarysIndex();
+    const varys =
+        getVarysIndex();
 
-    const player=players[currentPlayer];
+    const player =
+        players[currentPlayer];
 
-    const targetHouse=board[target].house;
+    const targetHouse =
+        board[target].house;
 
-    const path=[];
+    const path = [];
 
-    if(Math.floor(v/6)===Math.floor(target/6)){
+    if(
+        Math.floor(varys/6)
+        ===
+        Math.floor(target/6)
+    ){
 
-        const step=target>v?1:-1;
+        const step =
+            target > varys
+            ? 1
+            : -1;
 
-        for(let i=v+step;;i+=step){
+        for(
+            let i = varys + step;
+            ;
+            i += step
+        ){
 
-            if(board[i] && board[i].house===targetHouse)
+            if(
+                board[i] &&
+                board[i].house
+                === targetHouse
+            ){
                 path.push(i);
+            }
 
-            if(i===target)
+            if(i === target){
                 break;
+            }
+
         }
 
-    } else {
+    }
+    else{
 
-        const step=target>v?6:-6;
+        const step =
+            target > varys
+            ? 6
+            : -6;
 
-        for(let i=v+step;;i+=step){
+        for(
+            let i = varys + step;
+            ;
+            i += step
+        ){
 
-            if(board[i] && board[i].house===targetHouse)
+            if(
+                board[i] &&
+                board[i].house
+                === targetHouse
+            ){
                 path.push(i);
+            }
 
-            if(i===target)
+            if(i === target){
                 break;
+            }
+
         }
+
     }
 
     path.forEach(idx=>{
 
-        if(!board[idx]) return;
+        if(!board[idx]){
+            return;
+        }
 
-        player.cards[targetHouse]=(player.cards[targetHouse]||0)+1;
+        player.cards[targetHouse] =
+                        (
+                player.cards[
+                    targetHouse
+                ] || 0
+            ) + 1;
 
-        board[idx]=null;
+        board[idx] = null;
+
     });
 
-    board[v]=null;
-    board[target]={house:"Varys",id:"Varys"};
+    board[varys] = null;
+
+    board[target] = {
+        house:"Varys",
+        id:"Varys"
+    };
 
     updateBanners();
 
-    log(`${player.name} collected ${path.length} ${targetHouse}`);
+    log(
+        `${player.name}
+        collected
+        ${path.length}
+        ${targetHouse}`
+    );
 
     if(checkEndGame()){
+
         finishGame();
+
         return;
     }
 
-    currentPlayer=(currentPlayer+1)%players.length;
+    currentPlayer =
+        (
+            currentPlayer + 1
+        ) %
+        players.length;
 
     render();
+
 }
 
 function updateBanners(){
 
-    Object.keys(houseCounts).forEach(house=>{
+    Object.keys(
+        houseCounts
+    ).forEach(house=>{
 
-        let max=-1;
-        let leader=[];
+        let max = -1;
 
-        players.forEach((p,index)=>{
+        let leaders = [];
 
-            const count=p.cards[house]||0;
+        players.forEach(
+            (
+                player,
+                index
+            )=>{
 
-            if(count>max){
-                max=count;
-                leader=[index];
-            } else if(count===max){
-                leader.push(index);
+            const count =
+                player.cards[
+                    house
+                ] || 0;
+
+            if(
+                count > max
+            ){
+
+                max = count;
+
+                leaders = [
+                    index
+                ];
+
             }
+            else if(
+                count === max
+            ){
+
+                leaders.push(
+                    index
+                );
+
+            }
+
         });
 
-        players.forEach(p=>p.banners.delete(house));
+        players.forEach(
+            player=>
+            player.banners.delete(
+                house
+            )
+        );
 
-        leader.forEach(i=>{
-            if(max>0)
-                players[i].banners.add(house);
+        leaders.forEach(i=>{
+
+            if(max > 0){
+
+                players[i]
+                .banners
+                .add(house);
+
+            }
+
         });
+
     });
+
 }
 
 function checkEndGame(){
 
-    return getLegalMoves().length===0;
+    return (
+        getLegalMoves()
+        .length === 0
+    );
+
 }
 
 function finishGame(){
 
-    gameOver=true;
+    gameOver = true;
 
-    let winners=[];
-    let best=-1;
+    let winners = [];
 
-    players.forEach((p,i)=>{
+    let bestScore = -1;
 
-        const score=p.banners.size;
+    players.forEach(
+        (
+            player,
+            index
+        )=>{
+                        const score =
+                player.banners.size;
 
-        if(score>best){
-            best=score;
-            winners=[i];
-        }
-        else if(score===best){
-            winners.push(i);
-        }
-    });
+            if(
+                score > bestScore
+            ){
 
-    let winner=winners[0];
+                bestScore = score;
 
-    if(winners.length>1){
+                winners = [index];
 
-        let strongest=-1;
+            }
+            else if(
+                score === bestScore
+            ){
 
-        winners.forEach(i=>{
+                winners.push(
+                    index
+                );
 
-            players[i].banners.forEach(b=>{
+            }
 
-                if(bannerValue[b]>strongest){
-
-                    strongest=bannerValue[b];
-                    winner=i;
-                }
-            });
         });
+
+    let winner =
+        winners[0];
+
+    if(
+        winners.length > 1
+    ){
+
+        let strongest =
+            -1;
+
+        winners.forEach(
+            playerIndex=>{
+
+            players[
+                playerIndex
+            ]
+            .banners
+            .forEach(
+                banner=>{
+
+                if(
+                    bannerValue[
+                        banner
+                    ] > strongest
+                ){
+
+                    strongest =
+                        bannerValue[
+                            banner
+                        ];
+
+                    winner =
+                        playerIndex;
+
+                }
+
+            });
+
+        });
+
     }
 
     render();
 
     alert(
-        `Game Over!\n\nWinner: ${players[winner].name}\nBanners: ${players[winner].banners.size}`
+        `Game Over!\n\n` +
+        `Winner: ` +
+        players[winner].name +
+        `\n` +
+        `Banners: ` +
+        players[winner]
+        .banners.size
     );
+
 }
 
 </script>
+
 </body>
 </html>
