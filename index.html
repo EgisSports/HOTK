@@ -386,6 +386,10 @@ let players = [];
 let currentPlayer = 0;
 let gameOver = false;
 
+// remembers who most recently collected
+// a card from each house
+let lastCollector = {};
+
 function updatePlayerInputs(){
 
     const count =
@@ -464,6 +468,8 @@ function startGame(){
     gameOver = false;
 
     players = [];
+
+    lastCollector = {};
 
     const count =
         parseInt(
@@ -955,6 +961,13 @@ function moveVarys(target){
 
     });
 
+    if(path.length > 0){
+
+    lastCollector[targetHouse] =
+        currentPlayer;
+
+}
+
     board[varys] = null;
 
     board[target] = {
@@ -994,9 +1007,24 @@ function updateBanners(){
         houseCounts
     ).forEach(house=>{
 
-        let max = -1;
+        let max = Math.max(
+            ...players.map(
+                p =>
+                p.cards[house] || 0
+            )
+        );
 
-        let leaders = [];
+        players.forEach(
+            p =>
+            p.banners.delete(house)
+        );
+
+        if(max <= 0){
+            return;
+        }
+
+        const tiedPlayers =
+            [];
 
         players.forEach(
             (
@@ -1004,52 +1032,53 @@ function updateBanners(){
                 index
             )=>{
 
-            const count =
-                player.cards[
+                if(
+                    (player.cards[house]||0)
+                    === max
+                ){
+
+                    tiedPlayers.push(
+                        index
+                    );
+
+                }
+
+            });
+
+        // only one leader
+        if(
+            tiedPlayers.length === 1
+        ){
+
+            players[
+                tiedPlayers[0]
+            ]
+            .banners
+            .add(house);
+
+        }
+
+        // tie for lead
+        else{
+
+            const owner =
+                lastCollector[
                     house
-                ] || 0;
-
-            if(
-                count > max
-            ){
-
-                max = count;
-
-                leaders = [
-                    index
                 ];
 
-            }
-            else if(
-                count === max
+            if(
+                owner !== undefined
             ){
 
-                leaders.push(
-                    index
-                );
-
-            }
-
-        });
-
-        players.forEach(
-            player=>
-            player.banners.delete(
-                house
-            )
-        );
-
-        leaders.forEach(i=>{
-
-            if(max > 0){
-
-                players[i]
+                players[
+                    owner
+                ]
                 .banners
                 .add(house);
 
             }
 
-        });
+        }
 
     });
 
